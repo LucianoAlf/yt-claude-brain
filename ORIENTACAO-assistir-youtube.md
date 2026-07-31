@@ -145,6 +145,55 @@ WARNING: HTTP Error 429: Too Many Requests
 **Não vá atrás de cookies na primeira ocorrência.** Na prática é transitório: a mesma URL
 funcionou na tentativa seguinte, sem nenhuma mudança. Repita antes de complicar.
 
+**Mas repetir só resolve em máquina de IP residencial.** Veja a seção seguinte.
+
+---
+
+## O anti-bot depende do seu ambiente, não do vídeo
+
+Esta é a diferença que mais confunde: **o mesmo vídeo pode funcionar num agente e falhar
+noutro**, com a mesma versão do yt-dlp e a mesma configuração.
+
+Caso medido em 2026-07-31, vídeo `2rdMEq3kr34`, yt-dlp 2026.07.04 nos dois lados:
+
+| Ambiente | Resultado |
+|---|---|
+| Desktop Windows, IP residencial | Baixou. 429 transitório na primeira, sucesso na segunda |
+| Container Linux como `root` (VPS) | Bloqueado. Retry falhou, `player_client=mweb` falhou |
+
+**O YouTube pontua reputação de IP.** Faixa de datacenter recebe anti-bot persistente;
+faixa residencial recebe no máximo um 429 passageiro. Trocar de `player_client` não
+resolve isso, porque o problema não é o cliente — é de onde a requisição sai.
+
+### Como saber em qual caso você está
+
+Se o retry simples resolve, você está em IP residencial e a seção anterior basta.
+Se o retry **e** um cliente alternativo falham, é reputação de IP. Pare de trocar cliente.
+
+### O que fazer em ambiente bloqueado
+
+Em ordem de custo crescente:
+
+1. **Priorize sessão de navegador real, não o yt-dlp.** Um navegador logado costuma passar
+   onde o yt-dlp não passa, porque ele *é* um navegador. Se o agente tem CDP ou painel de
+   browser, buscar legenda por ali deve ser o **caminho primário** nesse ambiente, com o
+   yt-dlp como reserva — o inverso do que faz sentido em máquina residencial.
+2. **Habilite o solucionador de desafio JS.** O yt-dlp avisa que pulou os componentes
+   remotos: `--remote-components ejs:github`. Em IP de datacenter os desafios JS aparecem
+   muito mais, então isso pesa mais lá do que aqui.
+3. **Cookies de uma conta dedicada de agentes** (`--cookies cookies.txt`). Nunca da conta
+   pessoal: a conta usada pode ser sinalizada.
+4. **Separe download de processamento.** Baixe onde funciona e passe os artefatos adiante.
+   O `watch.py` aceita caminho de arquivo local, então frames e transcrição rodam em
+   qualquer máquina depois.
+
+### Regra de diagnóstico
+
+**Chave de API resolvida não significa transcrição resolvida.** São dois gargalos distintos
+em sequência: primeiro obter a mídia, depois transcrever. O Whisper só entra se houver
+áudio baixado. Se o yt-dlp não baixa, a chave estar perfeita não muda nada — e é fácil
+perder tempo depurando o lado errado.
+
 ---
 
 ## Detalhes de plataforma (Windows)
