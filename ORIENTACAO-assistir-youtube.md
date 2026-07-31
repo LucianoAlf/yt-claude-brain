@@ -133,6 +133,29 @@ A segunda forma é a melhor: leia a transcrição primeiro, ache onde a pessoa d
 Aponta-se para a tela justamente quando a mudança visual é *baixa* — que é o caso que
 o detector de cena perde.
 
+### 3b. Os timestamps do relatório de scene-change não são confiáveis
+
+**Descoberto em 2026-07-31, e já contaminou uma análise.**
+
+O relatório do `watch.py` lista cada frame como `frame_0107.jpg (t=03:29, reason=scene-change)`.
+**Esse `t=` pode não corresponder ao conteúdo do frame.** Conferido contra o ffmpeg no
+vídeo `EzcXGtjNm5E`: o relatório dizia que 03:29 e 07:59 eram planos do apresentador; o
+ffmpeg mostra um README e um diagrama nesses instantes. Erro sistemático, não pontual.
+
+O modo `--timestamps` **é** confiável — bate com o ffmpeg. O modo scene-change não.
+
+Consequência: dá para confiar nos frames como *amostra do que existe no vídeo*, mas **não
+para afirmar quando cada coisa acontece**. Uma análise que cite momento fica errada.
+
+Quando o *quando* importar, extraia direto:
+
+```bash
+ffmpeg -ss 209 -i video.mp4 -frames:v 1 -vf scale=768:-1 saida.jpg
+```
+
+Amostragem uniforme com ffmpeg também dá retrato mais honesto da mistura visual do vídeo
+do que a seleção por cena, que enviesa para os trechos de mais movimento.
+
 ### 4. HTTP 429 do YouTube é normal — só repita
 
 Você vai ver isto e vai parecer bloqueio definitivo:

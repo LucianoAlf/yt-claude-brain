@@ -87,16 +87,29 @@ vídeo** — laranja-amarelado (03:29), vermelho-laranja saturado (dominante), v
 mudar de cena — é o que evita o vídeo parecer estático em 19 minutos.
 
 **Cartelas — o sistema tipográfico:**
-- Nível: `NÍVEL 5` em sans-serif bold caixa alta, dentro de **caixa translúcida com borda
-  tracejada** (referência visual a caixa de seleção de ferramenta de design), com
-  `A AUTONOMIA` abaixo em **serifada itálica**. Glifo de brilho de 4 pontas ao lado.
+- Nível: `NÍVEL 5` em sans-serif bold caixa alta, dentro de **caixa preenchida azul-petróleo
+  com borda tracejada** (referência visual a caixa de seleção de ferramenta de design; a
+  caixa tem um corte diagonal na base), com `A AUTONOMIA` abaixo em **serifada itálica**.
+  Glifos de brilho de 4 pontas soltos ao redor. Fundo azul-marinho escuro, nunca laranja.
 - Conceito: `Conceito 18.` em serifada itálica + `Os skills: o SOP digital` em sans-serif,
   ancorado no canto superior esquerdo, sobreposto ao plano do apresentador.
 
 O par tipográfico **sans-serif bold + serifada itálica** é a assinatura da marca.
 
-**Paleta:** laranja→vermelho→vinho como base; ciano/azul e branco aparecem só em cartelas
-de contraste, criando pico de atenção quando entram.
+**Paleta — dois mundos, e essa é a decisão central do canal.**
+
+Não existe uma paleta com acentos. Existem **duas paletas que nunca se misturam**:
+
+| Mundo | Cor | O que aparece nele |
+|---|---|---|
+| **Quente** | Gradiente radial laranja→vermelho, centro quente atrás da cabeça, queda a preto nos cantos | **Só o apresentador.** Nada de gráfico entra aqui |
+| **Frio** | Azul-marinho quase preto, com arcos amplos de brilho ao fundo; linha e ícone em ciano/turquesa com glow | **Toda a informação:** cartelas de nível, cartelas de conceito, diagramas, esquemas |
+
+Gravação de tela é um terceiro registro, sempre em quadro cheio, sem tratamento.
+
+O efeito é que **calor = pessoa, frio = informação**. O espectador sabe, antes de ler
+qualquer coisa, se está recebendo opinião ou estrutura. É barato de reproduzir e é o que
+mais separa esse canal de um vídeo comum de talking head.
 
 **Transições:** whip-pan desfocado, vazamento de luz (light leak) colorido, flash branco.
 Rápidas, quase subliminares.
@@ -112,6 +125,24 @@ desfocado colorido, e **captura de tela cheia do terminal** rodando Claude Code 
 - **CTA final curto:** "se inscreve no canal, hype esse vídeo, deixa o like, muito obrigado. E se você quer aprender uma ferramenta nova, comenta aqui."
 
 ---
+
+## Como esta análise foi corrigida
+
+A primeira versão deste documento afirmava que a paleta base era laranja e que ciano/azul
+eram "só cartelas de contraste". **Estava invertido.**
+
+O erro veio de confiar nos rótulos `t=MM:SS` do relatório de frames da skill `/watch`.
+Conferidos contra o ffmpeg, **eles não batem com o conteúdo**: o relatório dizia que
+03:29 e 07:59 eram planos do apresentador em fundo laranja; o ffmpeg mostra um README e um
+diagrama ciano nos mesmos instantes. O modo `--timestamps` da skill concorda com o ffmpeg;
+o modo scene-change não.
+
+Toda afirmação visual aqui foi refeita sobre amostragem uniforme com ffmpeg
+(`ffmpeg -ss <seg> -i video.mp4 -frames:v 1`), que é verificável. Timestamps individuais
+de plano foram removidos por não serem confiáveis.
+
+**Regra que fica:** para análise visual em que o *quando* importa, extraia com ffmpeg
+direto. Ver `ORIENTACAO-assistir-youtube.md`.
 
 ## Limitação desta análise
 
