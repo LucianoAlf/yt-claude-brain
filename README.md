@@ -10,6 +10,7 @@ principalmente as coisas que falham em silêncio e não aparecem na documentaç�
 | Arquivo | O que é |
 |---|---|
 | [ORIENTACAO-assistir-youtube.md](ORIENTACAO-assistir-youtube.md) | Como usar a skill `/watch` para assistir vídeos do YouTube sem cair nas quatro armadilhas silenciosas |
+| [ORIENTACAO-google-navegador-isolado.md](ORIENTACAO-google-navegador-isolado.md) | Como alcançar NotebookLM, YouTube, Gemini e AI Studio com a conta de agentes, sem receber senha |
 | [estilo-labs.md](estilo-labs.md) | Decomposição do estilo editorial do canal LABS — roteiro, retórica, registro de fala e sistema visual |
 | [scripts/limpar-vtt.py](scripts/limpar-vtt.py) | Remove duplicatas e tags de legendas VTT do YouTube |
 
