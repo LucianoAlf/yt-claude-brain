@@ -71,6 +71,52 @@ primeiro pedaço no teste.
 
 Mandando o vídeo inteiro, isso não ocorre: o modelo vê a linha do tempo completa.
 
+
+## Precisão medida — e por que 100% exige duas ferramentas
+
+Testado no vídeo de 55 min, comparando as afirmações do Gemini contra a legenda
+`pt-orig` e contra frames extraídos com ffmpeg nos timestamps exatos.
+
+### Vídeo inteiro numa chamada (3.300 frames a 1 fps)
+
+Funciona, mas **inventa detalhe**. Ele afirmou "painel do SuperGrok com consumo em 88%"
+num instante em que a tela mostrava outra coisa. Fronteiras de bloco derrapam minutos.
+Placar em 10 pontos conferidos: 6 certos, 2 parciais, 2 errados.
+
+### Blocos de 10 min, exigindo citação verbatim
+
+Muito melhor, e a diferença é grande:
+
+| Dimensão | Resultado medido |
+|---|---|
+| Citações verbatim | **9 de 9** encontradas na legenda original |
+| Erro de timestamp | média **11 s**, mediana 14 s, pior **18 s** |
+| Dentro de 30 s | **9 de 9** |
+| Afirmações visuais | **~3,5 de 6** — deriva de ~1 minuto |
+
+**A assimetria é o achado central:** o que ele **ouve** é confiável; o que ele **vê** é
+aproximado. Citação e timestamp de fala passam no teste. Nome de tela num instante exato
+erra com frequência — ele antecipa ou atrasa a troca de tela em cerca de um minuto.
+
+Duas alavancas da API ainda não testadas que podem melhorar o lado visual:
+`videoMetadata.fps` (padrão 1 quadro/s) e `media_resolution` (Gemini 3).
+
+### O método que chega em 100%
+
+Nenhuma ferramenta sozinha chega. A combinação chega, porque cada uma cobre o furo da outra:
+
+1. **Gemini em blocos de 10 min**, exigindo citação verbatim → fala, estrutura, timestamps
+2. **Cruzar as citações** contra a legenda `pt-orig` → derruba invenção, confirma que processou
+3. **`ffmpeg -ss <t>`** nos momentos que importam → a tela naquele instante, por construção
+
+O passo 3 não é opcional. **Afirmação visual do Gemini é hipótese; o frame é a prova.**
+
+### Regra prática
+
+- Precisa saber **o que foi dito e quando** → Gemini em blocos, com citação verbatim. Confiável.
+- Precisa saber **o que estava na tela em T** → extraia o frame. Nunca cite o Gemini sozinho.
+- Precisa de **número** → calcule você. Ele erra (afirmou 150-165 PPM onde eram 216).
+
 ## Onde o Gemini ainda não é confiável
 
 Isto continua valendo e **não** foi resolvido:
