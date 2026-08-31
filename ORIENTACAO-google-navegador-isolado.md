@@ -117,11 +117,20 @@ por aba na mesma mensagem. Foi assim que as quatro ferramentas acima foram testa
 
 ---
 
-## Não resolvido
+## Persistência da sessão: intermitente — não confie
 
-**A sessão sobrevive a reiniciar o Claude Code?** Ainda não testado. Se não sobreviver,
-o usuário teria que logar a cada reinício e todo o ganho desta abordagem cai por terra.
-**Confirme isto antes de montar qualquer rotina em cima deste caminho.**
+Testado em 2026-07-31, e o resultado foi **inconsistente**:
+
+- Sobreviveu ao primeiro reinício do Claude Code (Gemini abriu logado, saudando a conta)
+- **Não sobreviveu aos reinícios seguintes** — o painel voltou para a tela de login
+
+Ou seja: a sessão pode durar, mas **não é garantida**. Um teste positivo isolado não
+prova persistência; foi exatamente esse o erro cometido aqui.
+
+**Consequência prática:** nunca monte rotina automática que dependa desta sessão estar
+viva. Antes de qualquer fluxo que use as ferramentas do Google, **verifique o estado de
+login** (`get_page_text` e procure por "Fazer login") e peça ao usuário para logar de
+novo se tiver caído. Trate a re-autenticação como passo normal do fluxo, não como erro.
 
 ## Fora de escopo para o agente
 
