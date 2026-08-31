@@ -15,6 +15,8 @@ principalmente as coisas que falham em silêncio e não aparecem na documentaç�
 | [ORIENTACAO-claude-video-vision.md](ORIENTACAO-claude-video-vision.md) | Teste real do plugin alternativo: elimina a armadilha da legenda traduzida, mas perde conteúdo em silêncio |
 | [estilo-labs.md](estilo-labs.md) | Decomposição do estilo editorial do canal LABS — roteiro, retórica, registro de fala e sistema visual |
 | [PROMPT-onboarding-watch.md](PROMPT-onboarding-watch.md) | Prompt pronto para colar num chat novo que acabou de instalar a `/watch` |
+| [skills/assistir-video-youtube/](skills/assistir-video-youtube/SKILL.md) | **Skill** — instale em `~/.claude/skills/` para o agente assistir vídeo com verificação |
+| [scripts/assistir-youtube.py](scripts/assistir-youtube.py) | Pipeline completo: blocos → verificação de citação → frames |
 | [scripts/gemini-assistir.py](scripts/gemini-assistir.py) | Manda o vídeo inteiro (URL ou arquivo) para o Gemini assistir — sem chunking, sem perda |
 | [scripts/limpar-vtt.py](scripts/limpar-vtt.py) | Remove duplicatas e tags de legendas VTT do YouTube |
 
