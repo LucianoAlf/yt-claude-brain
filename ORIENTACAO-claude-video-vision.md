@@ -95,6 +95,20 @@ Se você baixar com `-f worst` para vencer o 403, pode acabar com **256×144**, 
 aconteceu aqui. Serve para transcrição e para os filtros de áudio, mas **inutiliza a
 análise de frames**. Para passe visual, force altura mínima: `-f "bv[height<=720]+ba/b"`.
 
+
+## A correção definitiva
+
+O problema **não é o Gemini, é a camada de chunking do plugin.** Chamando a API do
+Gemini direto com o vídeo inteiro, os mesmos 10 minutos que o plugin perdeu voltaram
+como 16 itens com timestamps, fala e tela, em 25 s. O vídeo completo de 55 min coube
+numa única chamada: 301.113 tokens de vídeo, 127 s, sem truncar.
+
+Use [`scripts/gemini-assistir.py`](scripts/gemini-assistir.py). Ver
+`ORIENTACAO-analise-de-audio-com-gemini.md`.
+
+Este plugin continua útil pelos filtros ffmpeg (`loudness`, `scene_changes` com score,
+`silence`, `motion`) — mas **não** para transcrever vídeo longo.
+
 ## Veredito
 
 Vale ter, **mas não substitui verificação**. Ele resolve a armadilha da legenda traduzida

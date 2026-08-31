@@ -11,10 +11,11 @@ principalmente as coisas que falham em silêncio e não aparecem na documentaç�
 |---|---|
 | [ORIENTACAO-assistir-youtube.md](ORIENTACAO-assistir-youtube.md) | Como usar a skill `/watch` para assistir vídeos do YouTube sem cair nas quatro armadilhas silenciosas |
 | [ORIENTACAO-google-navegador-isolado.md](ORIENTACAO-google-navegador-isolado.md) | Como alcançar NotebookLM, YouTube, Gemini e AI Studio com a conta de agentes, sem receber senha |
-| [ORIENTACAO-analise-de-audio-com-gemini.md](ORIENTACAO-analise-de-audio-com-gemini.md) | Como cobrir o que a `/watch` não faz — entonação, ritmo, pausa, trilha — e quanto do que o Gemini responde dá para confiar |
+| [ORIENTACAO-analise-de-audio-com-gemini.md](ORIENTACAO-analise-de-audio-com-gemini.md) | **A solução definitiva:** fazer o Gemini assistir o vídeo inteiro numa chamada, sem fatiar. Inclui o que dele dá para confiar |
 | [ORIENTACAO-claude-video-vision.md](ORIENTACAO-claude-video-vision.md) | Teste real do plugin alternativo: elimina a armadilha da legenda traduzida, mas perde conteúdo em silêncio |
 | [estilo-labs.md](estilo-labs.md) | Decomposição do estilo editorial do canal LABS — roteiro, retórica, registro de fala e sistema visual |
 | [PROMPT-onboarding-watch.md](PROMPT-onboarding-watch.md) | Prompt pronto para colar num chat novo que acabou de instalar a `/watch` |
+| [scripts/gemini-assistir.py](scripts/gemini-assistir.py) | Manda o vídeo inteiro (URL ou arquivo) para o Gemini assistir — sem chunking, sem perda |
 | [scripts/limpar-vtt.py](scripts/limpar-vtt.py) | Remove duplicatas e tags de legendas VTT do YouTube |
 
 ## Como um agente usa isto
