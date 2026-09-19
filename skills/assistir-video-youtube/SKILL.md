@@ -22,7 +22,7 @@ faltando 8 minutos de conteúdo, ou nomeando uma tela que não está lá.
 ## Quick Reference
 
 ```bash
-python scripts/assistir-youtube.py "https://youtu.be/ID" pasta-saida
+python "<diretório desta skill>/assistir-youtube.py" "https://youtu.be/ID" pasta-saida
 ```
 
 Gera `pasta-saida/relatorio.md` (timeline + tabela de verificação), `frames/*.jpg`
@@ -89,6 +89,11 @@ ffmpeg, não corresponde ao conteúdo do frame. Para saber *quando*, use
 mudam de hora em hora na mesma máquina. Repita antes de complicar. Se persistir, tente
 `yt-dlp --remote-components ejs:github` — destravou download que falhou 5 vezes seguidas.
 
+**Desistir depois de testar um só `player_client`.** Num vídeo em que `web`, `web_safari`,
+`tv` e `ios` falharam (403, "requested format is not available", "page needs to be
+reloaded"), `--extractor-args "youtube:player_client=mweb"` baixou na primeira tentativa.
+Percorra os clientes antes de concluir que o vídeo está bloqueado.
+
 ## Quando o download falha de vez
 
 Acontece: formatos acima de 144p ficam bloqueados, e às vezes todos. O script cai para
@@ -103,13 +108,9 @@ baixe numa máquina residencial e passe o arquivo.
 
 ## Vídeo local
 
-O script é para URL do YouTube. Para arquivo local, a skill `/watch` aceita caminho
-direto e o Whisper transcreve automaticamente (~US$ 0,006/min). Vale mais nesse caso:
-sem legenda para cruzar, a verificação de citação não existe — mas o áudio é limpo e a
-transcrição sai fiel.
-
-Para o Gemini assistir arquivo local, use `scripts/gemini-assistir.py`, que sobe pela
-File API quando passa de 20 MB.
+Este script é só para URL do YouTube. Para arquivo em disco use a skill
+**`assistir-video-local`**: mesmo método, mas a conferência das falas vem de um Whisper
+rodando à parte, já que arquivo local não tem legenda do YouTube para cruzar.
 
 ## O que nenhuma dessas ferramentas faz
 

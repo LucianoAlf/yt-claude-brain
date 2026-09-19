@@ -56,7 +56,7 @@ def upload_file(path, key):
     size = os.path.getsize(path)
     mime = mimetypes.guess_type(path)[0] or "video/mp4"
     start = urllib.request.Request(
-        f"{API}/files?key={key}",
+        f"{API.replace('/v1beta', '/upload/v1beta')}/files?key={key}",
         data=json.dumps({"file": {"display_name": os.path.basename(path)}}).encode(),
         headers={
             "X-Goog-Upload-Protocol": "resumable",
