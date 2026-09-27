@@ -50,6 +50,9 @@ alternam em poucos segundos. **Por isso ler os frames não é opcional.**
 
 ## Como ler o relatório
 
+- **COBERTURA INCOMPLETA no topo** → há trecho do vídeo sobre o qual o modelo não disse
+  nada, mesmo depois da repetição automática. As taxas valem só para o resto. Diga isso
+  ao usuário e, se o trecho importar, rode de novo mais tarde.
 - **conferida `NAO`** → paráfrase apresentada como verbatim. Não cite como fala literal.
 - **tempo REAL** → use este timestamp; o início do intervalo erra alguns segundos.
 - **Frames** → a descrição de quadro é hipótese até você ler o frame.

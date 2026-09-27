@@ -195,6 +195,26 @@ def concorda(a, b):
     return bool(pa & pb)
 
 
+def buracos(intervalos, dur, minimo=40):
+    """Trechos do video sobre os quais o modelo nao disse NADA.
+
+    Um bloco que volta vazio — limite de requisicao (HTTP 429), resposta cortada,
+    o modelo decidindo comecar no meio — some sem barulho: o relatorio fecha com
+    "PRONTO" e uma boa taxa de conferencia, calculada so sobre o que sobrou. Ja
+    aconteceu de 9 minutos sumirem assim num video de 27. Cobertura e a unica
+    medida que denuncia isso, porque nao depende de o modelo admitir que falhou.
+    """
+    faixas = sorted((a, max(b, a)) for a, b, *_ in intervalos)
+    vazios, cursor = [], 0.0
+    for a, b in faixas:
+        if a - cursor >= minimo:
+            vazios.append((cursor, a))
+        cursor = max(cursor, b)
+    if dur - cursor >= minimo:
+        vazios.append((cursor, dur))
+    return vazios
+
+
 def localizar(cit, palavras, perto=None):
     """Janela da transcricao que melhor casa com a citacao -> (fracao, segundo_real).
 
@@ -258,6 +278,15 @@ def main():
         txt = gemini(url, ini, fim, key)
         bruto.append(txt); intervalos += parse_intervalos(txt)
     intervalos = sorted(set(intervalos))
+    vazios = buracos(intervalos, dur)
+    if vazios:
+        sys.stderr.write(f"      {len(vazios)} trecho(s) sem cobertura — repetindo\n")
+        for a, b in vazios:
+            sys.stderr.write(f"      repete {hhmm(a)}-{hhmm(b)}\n")
+            txt = gemini(url, int(max(a - 5, 0)), int(min(b + 5, dur)), key)
+            bruto.append(txt); intervalos += parse_intervalos(txt)
+        intervalos = sorted(set(intervalos))
+        vazios = buracos(intervalos, dur)
 
     sys.stderr.write("[5/5] verificando e extraindo frames...\n")
     linhas, ok, tot, drift = [], 0, 0, []
@@ -291,6 +320,10 @@ def main():
     rel = os.path.join(saida, "relatorio.md")
     with io.open(rel, "w", encoding="utf-8") as f:
         f.write(f"# {titulo}\n\n{url} — {hhmm(dur)} — {len(intervalos)} intervalos\n\n")
+        if vazios:
+            f.write("> **COBERTURA INCOMPLETA.** O modelo nao disse nada sobre "
+                    + ", ".join(f"{hhmm(a)}-{hhmm(b)}" for a, b in vazios)
+                    + ". As taxas abaixo valem so para o resto do video.\n\n")
         f.write("## Timeline\n\n| inicio | fim | tela | citacao | conferida | tempo REAL |\n")
         f.write("|---|---|---|---|---|---|\n")
         for a, b, app, cit, bom, sc, real in linhas:
@@ -333,7 +366,10 @@ def main():
         for t in bruto: f.write(t + "\n\n---\n\n")
         f.write("</details>\n")
 
-    sys.stderr.write(f"\nPRONTO: {rel}\n")
+    sys.stderr.write(f"\n{'PRONTO' if not vazios else 'PRONTO, MAS COM BURACOS'}: {rel}\n")
+    if vazios:
+        sys.stderr.write("  SEM COBERTURA: "
+                         + ", ".join(f"{hhmm(a)}-{hhmm(b)}" for a, b in vazios) + "\n")
     if tot: sys.stderr.write(f"  citacoes confirmadas: {ok}/{tot} ({ok/tot:.0%})\n")
     sys.stderr.write(f"  frames para conferir: {len(frames)}\n")
 

@@ -146,6 +146,13 @@ conteúdo **restrito** não sai.
 - **Conferidor comparava texto de botão com o áudio.** Em gravação de tela, a primeira
   coisa entre aspas é o rótulo de um botão, não a fala. Sintoma: 0% de confirmação com
   falas visivelmente corretas no bruto. A citação agora vem só da linha `Fala:`.
+- **Bloco vazio sumia sem avisar.** Num vídeo de 27 min, o primeiro bloco bateu no
+  limite de requisição (HTTP 429) e voltou vazio. O relatório fechou com "PRONTO" e
+  93% de citações confirmadas — calculadas só sobre o que sobrou, com **9 minutos sem
+  cobertura nenhuma**. Sintoma: os frames começam muito depois do início do vídeo.
+  Agora os dois scripts medem a cobertura, repetem sozinhos os trechos que faltaram e,
+  se ainda faltar, escrevem **COBERTURA INCOMPLETA** no topo do relatório e terminam
+  com "PRONTO, MAS COM BURACOS" em vez de "PRONTO".
 - **Fala repetida recebia o timestamp da primeira vez.** Um trecho reprisado no fim do
   vídeo foi "corrigido" em 293 s para trás — o Gemini estava certo. Sintoma: um "pior
   erro de timestamp" de minutos quando a média é de segundos. Corrigido também nos

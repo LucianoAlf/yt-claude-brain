@@ -258,6 +258,26 @@ def parse_intervalos(txt):
     return out
 
 
+def buracos(intervalos, dur, minimo=40):
+    """Trechos do video sobre os quais o modelo nao disse NADA.
+
+    Um bloco que volta vazio — limite de requisicao, resposta cortada, o modelo
+    decidindo comecar no meio — some sem barulho: o relatorio fecha com "PRONTO"
+    e uma boa taxa de conferencia, calculada so sobre o que sobrou. Ja aconteceu
+    de 9 minutos sumirem assim num video de 27. Cobertura e a unica medida que
+    denuncia isso, porque nao depende de o modelo admitir que falhou.
+    """
+    faixas = sorted((a, max(b, a)) for a, b, *_ in intervalos)
+    vazios, cursor = [], 0.0
+    for a, b in faixas:
+        if a - cursor >= minimo:
+            vazios.append((cursor, a))
+        cursor = max(cursor, b)
+    if dur - cursor >= minimo:
+        vazios.append((cursor, dur))
+    return vazios
+
+
 def localizar(cit, palavras, perto=None):
     """Janela da transcricao que melhor casa com a citacao -> (fracao, segundo_real).
 
@@ -343,6 +363,17 @@ def main():
     # intervalo sem quadro nem fala; e ruido, nao observacao
     intervalos = sorted({(a, b, q, c) for a, b, q, c in intervalos
                          if a <= dur + 2 and not (q == "?" and not c)})
+    vazios = buracos(intervalos, dur)
+    if vazios:
+        log(f"      {len(vazios)} trecho(s) sem cobertura — repetindo")
+        for a, b in vazios:
+            log(f"      repete {hhmm(a)}-{hhmm(b)}")
+            txt = gemini(uri, mime, max(a - 5, 0), min(b + 5, dur), dur, key)
+            bruto.append(txt); intervalos += parse_intervalos(txt)
+        intervalos = sorted({(a, b, q, c) for a, b, q, c in intervalos
+                             if a <= dur + 2 and not (q == "?" and not c)})
+        vazios = buracos(intervalos, dur)
+
     if "--manter-upload" not in flags:
         apagar_upload(nome, key)
 
@@ -374,6 +405,10 @@ def main():
     with io.open(rel, "w", encoding="utf-8") as f:
         f.write(f"# {os.path.basename(video)}\n\n{hhmm(dur)} — {len(intervalos)} intervalos — "
                 f"transcricao: {fonte}\n\n")
+        if vazios:
+            f.write("> **COBERTURA INCOMPLETA.** O modelo nao disse nada sobre "
+                    + ", ".join(f"{hhmm(a)}-{hhmm(b)}" for a, b in vazios)
+                    + ". As taxas abaixo valem so para o resto do video.\n\n")
         f.write("## Timeline\n\n| inicio | fim | quadro | fala | conferida | tempo REAL |\n")
         f.write("|---|---|---|---|---|---|\n")
         for a, b, q, cit, bom, sc, real in linhas:
@@ -404,7 +439,10 @@ def main():
             f.write(t + "\n\n---\n\n")
         f.write("</details>\n")
 
-    log(f"\nPRONTO: {rel}")
+    log(f"\n{'PRONTO' if not vazios else 'PRONTO, MAS COM BURACOS'}: {rel}")
+    if vazios:
+        log("  SEM COBERTURA: "
+            + ", ".join(f"{hhmm(a)}-{hhmm(b)}" for a, b in vazios))
     if tot:
         log(f"  citacoes confirmadas: {ok}/{tot} ({ok / tot:.0%})")
     log(f"  frames para conferir: {len(frames)}")
