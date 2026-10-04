@@ -37,6 +37,7 @@ confiável, tela é aproximada — por isso ler os quadros não é opcional.
 | [skills/assistir-video-local/](skills/assistir-video-local/SKILL.md) | **Skill** — vídeo em arquivo (baixado, WhatsApp, gravação de tela, reunião) |
 | [skills/assistir-video-youtube/](skills/assistir-video-youtube/SKILL.md) | **Skill** — vídeo do YouTube, com a legenda original como verdade-base |
 | [PROMPT-mestre-assistir-video.md](PROMPT-mestre-assistir-video.md) | Prompt para colar em outro agente: instala, confere o ambiente e ensina a usar |
+| [ORIENTACAO-codex.md](ORIENTACAO-codex.md) | **Fora do Claude Code** (Codex e outros): os scripts rodam igual, sem instalar skill |
 | [ORIENTACAO-assistir-video-local.md](ORIENTACAO-assistir-video-local.md) | Instalação, precisão medida, privacidade, custo e os bugs já encontrados |
 | [ORIENTACAO-analise-de-audio-com-gemini.md](ORIENTACAO-analise-de-audio-com-gemini.md) | O método com o Gemini e o que dele dá para confiar |
 | [ORIENTACAO-assistir-youtube.md](ORIENTACAO-assistir-youtube.md) | A skill `/watch` e as quatro armadilhas silenciosas dela |
